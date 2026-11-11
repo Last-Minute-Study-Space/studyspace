@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Review Platform - Numerical Methods</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f3e8ff 0%, #ffe4e6 50%, #ffffff 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: #e9d5ff;
+      --text-main: #3b0764;
+      --text-sub: #6b21a8;
+      --accent-pink: #ec4899;
+      --accent-pink-hover: #db2777;
+      --accent-lavender: #a855f7;
+      --accent-lavender-light: #f3e8ff;
+      --shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.15), 0 8px 10px -6px rgba(236, 72, 153, 0.1);
+      --pill-bg: #ffffff;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #0f172a 100%);
+      --card-bg: rgba(30, 27, 75, 0.75);
+      --card-border: #4c1d95;
+      --text-main: #f3e8ff;
+      --text-sub: #c084fc;
+      --accent-pink: #f472b6;
+      --accent-pink-hover: #ec4899;
+      --accent-lavender: #c084fc;
+      --accent-lavender-light: #3b0764;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      --pill-bg: #2e1065;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Tajawal', sans-serif;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
+
+    .logo-area h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--accent-lavender), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-area p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .theme-toggle {
+      background: var(--accent-lavender-light);
+      border: 2px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+    }
+
+    .lectures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .lecture-btn, .comprehensive-btn {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      padding: 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .comprehensive-btn {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
+      border-color: var(--accent-pink);
+    }
+
+    .lecture-btn:hover, .lecture-btn.active, .comprehensive-btn:hover, .comprehensive-btn.active {
+      border-color: var(--accent-pink);
+      background: var(--accent-lavender-light);
+      transform: translateY(-3px);
+    }
+
+    .lecture-btn h3, .comprehensive-btn h3 {
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 5px;
+    }
+
+    .lecture-btn span, .comprehensive-btn span {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: none;
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--card-border);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(45deg, var(--accent-lavender), var(--accent-pink));
+      color: white;
+      border: none;
+    }
+
+    .notice { padding: 12px 16px; margin: 12px 0 18px; border-radius: 12px; background: rgba(245, 158, 11, .14); border: 1px solid #f59e0b; color: var(--text-main); }
+
+    .panel {
+      display: none;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel.active {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .summary-section h2 {
+      color: var(--accent-pink);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      border-bottom: 2px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    .summary-card {
+      background: var(--pill-bg);
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--accent-lavender);
+    }
+
+    .summary-card h4 {
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .formula-box {
+      background: var(--accent-lavender-light);
+      padding: 12px;
+      border-radius: 12px;
+      font-family: monospace;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--text-main);
+      margin: 10px 0;
+    }
+
+    .question-card {
+      background: var(--pill-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .question-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 14px 18px;
+      border-radius: 12px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .option-btn:hover {
+      border-color: var(--accent-pink);
+      background: var(--accent-lavender-light);
+    }
+
+    .option-btn.correct {
+      background: rgba(16, 185, 129, 0.15) !important;
+      border-color: var(--success) !important;
+      color: var(--success) !important;
+      font-weight: bold;
+    }
+
+    .option-btn.wrong {
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-color: var(--error) !important;
+      color: var(--error) !important;
+    }
+
+    .feedback-box {
+      margin-top: 12px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .nav-tabs { flex-direction: column; }
+      header { flex-direction: column; gap: 15px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo-area">
+        <h1>✨ Quick Review Platform ✨</h1>
+        <p>Numerical Analysis & Computing Exam Prep</p>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
+      </button>
+    </header>
+
+    <!-- Lectures & Comprehensive Quiz Selector -->
+    <div class="lectures-grid">
+      <div class="lecture-btn active" onclick="selectLecture(1, this)">
+        <h3>Lecture 1</h3>
+        <span>Errors & Digits (33 Qs)</span>
+      </div>
+      <div class="lecture-btn" onclick="selectLecture(2, this)">
+        <h3>Lectures 2 & 3</h3>
+        <span>Linear Systems (25 Qs)</span>
+      </div>
+      <div class="lecture-btn" onclick="selectLecture(4, this)">
+        <h3>Lecture 4</h3>
+        <span>Root Finding (7 Qs)</span>
+      </div>
+      <div class="lecture-btn" onclick="selectLecture(5, this)">
+        <h3>Lecture 5</h3>
+        <span>Nonlinear Equations: Fixed Point & Newton-Raphson (37 Qs)</span>
+      </div>
+      <div class="comprehensive-btn" onclick="selectComprehensiveQuiz(this)">
+        <h3>🔥 Comprehensive Quiz</h3>
+        <span>All Lectures Combined</span>
+      </div>
+    </div>
+
+    <div class="nav-tabs" id="main-nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('summary', this)">📌 Lecture Summary</button>
+      <button class="tab-btn" onclick="switchTab('mcq', this)">📝 MCQ Bank</button>
+      <button class="tab-btn" onclick="switchTab('quiz', this)">⚡ Quick Quiz</button>
+    </div>
+
+    <main>
+      <div id="summary" class="panel active"></div>
+      <div id="mcq" class="panel"></div>
+      <div id="quiz" class="panel"></div>
+      <div id="comprehensive" class="panel"></div>
+    </main>
+  </div>
+
+  <script>
+    const data = {
+      1: {
+        summary: `
+          <div class="summary-section">
+            <h2>📌 Lecture 1: Introduction, Errors & Significant Digits</h2>
+            <div class="summary-card"><h4>1. What are Numerical Methods?</h4>
+              <p>Numerical methods find approximate numerical solutions when exact analytical solutions are impossible, too complex, or time-consuming.</p>
+            </div>
+            <div class="summary-card"><h4>2. Sources and Types of Errors</h4><ul>
+              <li><b>Modelling errors:</b> arise because mathematical equations represent/approximate a real physical system.</li>
+              <li><b>Blunders:</b> gross errors caused by human carelessness or misunderstanding.</li>
+              <li><b>Mistakes:</b> programming errors.</li>
+              <li><b>Inherent errors:</b> already present in the problem/data before solving; they cannot be completely eliminated.</li>
+              <li><b>Round-off errors:</b> caused by storing a limited number of digits.</li>
+              <li><b>Chopping:</b> discarding extra digits without rounding.</li>
+              <li><b>Truncation errors:</b> replacing an infinite process with a finite one.</li>
+            </ul></div>
+            <div class="summary-card"><h4>3. Accuracy, Precision, Inaccuracy & Imprecision</h4><ul>
+              <li><b>Accuracy:</b> closeness of a computed/measured value to the true value.</li>
+              <li><b>Precision:</b> closeness of repeated computed/measured values to each other.</li>
+              <li><b>Inaccuracy (bias):</b> systematic deviation from the truth.</li>
+              <li><b>Imprecision (uncertainty):</b> magnitude of the scatter.</li>
+            </ul></div>
+            <div class="summary-card"><h4>4. Error Formulas</h4><ul>
+              <li><b>Absolute error:</b> <span class="formula-box">Eₐ = |Xᴇ − Xₐ|</span></li>
+              <li><b>Relative error:</b> <span class="formula-box">Eᵣ = (Xᴇ − Xₐ) / Xᴇ</span></li>
+              <li><b>Percentage relative error:</b> <span class="formula-box">Eₚ = 100 × Eᵣ</span></li>
+            </ul><p>Xᴇ = exact/true value, Xₐ = approximate value. Use absolute magnitude when the question asks for error size.</p></div>
+            <div class="summary-card"><h4>5. Significant Digits</h4>
+              <p>Significant digits are the digits that can be used with confidence. The approximation Xₐ is correct to <b>t significant digits</b> when t is the largest non-negative integer satisfying:</p>
+              <div class="formula-box">|(Xᴇ − Xₐ) / Xᴇ| &lt; 5 × 10⁻ᵗ</div>
+              <p>Method: calculate relative error, then compare it with 5×10⁻ᵗ for successive values of t. Example from the lecture: e ≈ 2.71828 is correct to 6 significant digits.</p>
+            </div>
+            <div class="summary-card"><h4>6. Condition Number & Error Behavior</h4>
+              <p>The condition number describes how much relative input error affects relative output error. For a function:</p>
+              <div class="formula-box">C = |a f′(a) / f(a)|</div>
+              <ul><li>C = 1: neither amplification nor attenuation.</li><li>C &gt; 1: input error is amplified.</li><li>C &lt; 1: input error is attenuated.</li><li>Very large C: ill-conditioned / highly sensitive problem.</li></ul>
+            </div>
+          </div>
+        `,
+        mcq: [
+          { q: "Numerical methods are mainly used to:", options: ["Find exact analytical solutions", "Find approximate solutions to complex problems", "Eliminate all types of errors", "Avoid mathematical modeling"], ans: 1, exp: "Numerical methods find approximate solutions to complex problems[cite: 117]." },
+          { q: "Modelling errors occur because:", options: ["The computer rounds numbers", "Humans make careless mistakes", "Mathematical equations approximate physical systems", "The calculator battery is weak"], ans: 2, exp: "Mathematical equations approximate physical systems[cite: 124]." },
+          { q: "Blunders are caused by:", options: ["Floating-point arithmetic", "Human carelessness", "Taylor series expansion", "Truncation processes"], ans: 1, exp: "Blunders are gross errors caused by human carelessness[cite: 125]." },
+          { q: "Programming errors are classified as:", options: ["Modelling errors", "Inherent errors", "Mistakes", "Round-off errors"], ans: 2, exp: "Programming errors are considered mistakes[cite: 125]." },
+          { q: "Round-off errors occur because:", options: ["Infinite series are truncated", "Computers store finite digits", "Humans miscalculate", "Models are inaccurate"], ans: 1, exp: "Computers can only store a finite number of digits[cite: 139]." },
+          { q: "A chop-off error happens when:", options: ["A number is rounded properly", "Extra digits are discarded without rounding", "Taylor series is applied", "Data is measured inaccurately"], ans: 1, exp: "Extra digits are simply discarded without rounding[cite: 139]." },
+          { q: "Relative error is obtained by dividing absolute error by:", options: ["Approximate value", "100", "True (exact) value", "10"], ans: 2, exp: "Relative error = Absolute error / True value[cite: 131]." },
+          { q: "Percentage relative error equals:", options: ["Relative error ÷ 100", "Absolute error × 100", "Relative error × 100", "Absolute error ÷ 100"], ans: 2, exp: "Percentage relative error = Relative error × 100[cite: 131]." },
+          { q: "If the condition number is equal to 1, then:", options: ["Error is amplified", "Error is attenuated", "No amplification or attenuation", "The function is ill-conditioned"], ans: 2, exp: "Condition number = 1 means no error amplification or attenuation[cite: 145]." },
+          { q: "If the condition number is greater than 1, the problem is:", options: ["Well-conditioned", "Error reducing", "Error amplifying", "Exact"], ans: 2, exp: "Condition number > 1 amplifies the error[cite: 145]." },
+          { q: "A very large condition number indicates the function is:", options: ["Stable", "Ill-conditioned", "Exact", "Linear"], ans: 1, exp: "Very large condition numbers indicate ill-conditioned functions[cite: 145]." },
+          { q: "Truncation errors occur when:", options: ["A finite process replaces an infinite process", "Numbers are rounded", "Data is entered incorrectly", "Hardware fails"], ans: 0, exp: "A finite process approximates an infinite process[cite: 142]." },
+          { q: "Accuracy refers to:", options: ["Agreement among repeated values", "Closeness to the true value", "Speed of computation", "Number of iterations"], ans: 1, exp: "Accuracy is the closeness to the true value[cite: 127]." },
+          { q: "Precision refers to:", options: ["Closeness to true value", "Systematic bias", "Agreement among repeated values", "Absolute error"], ans: 2, exp: "Precision refers to the agreement among repeated measurements[cite: 127]." },
+          { q: "Chop-off error differs from rounding because it:", options: ["Adds digits", "Discards digits without rounding", "Uses Taylor series", "Reduces precision intentionally"], ans: 1, exp: "Chopping discards extra digits without rounding[cite: 139]." },
+          { q: "If relative error = 0.01, percentage relative error =", options: ["0.1%", "10%", "1%", "100%"], ans: 2, exp: "0.01 × 100 = 1%[cite: 81]." },
+          { q: "Significant digits represent:", options: ["Total digits in number", "Digits used with confidence", "Decimal places only", "Integer part only"], ans: 1, exp: "Significant digits are those that can be used with confidence[cite: 133]." },
+          { q: "Inaccuracy is also called:", options: ["Precision", "Bias", "Truncation", "Rounding"], ans: 1, exp: "Inaccuracy is known as systematic bias[cite: 129]." },
+          { q: "Imprecision refers to:", options: ["Systematic deviation", "Scatter of values", "Programming error", "True value"], ans: 1, exp: "Imprecision refers to the magnitude of the scatter[cite: 129]." },
+          { q: "Condition number measures:", options: ["Absolute error", "Amplification of input errors", "Machine precision", "Modeling quality"], ans: 1, exp: "Condition number measures the amplification of input errors[cite: 143]." },
+          { q: "Machine arithmetic errors include:", options: ["Modeling errors", "Rounding and chopping", "Bias", "Blunders"], ans: 1, exp: "Rounding and chopping are machine arithmetic errors[cite: 126]." },
+          { q: "Numerical methods are useful when analytical solutions are:", options: ["Easy", "Simple", "Impossible or complex", "Exact"], ans: 2, exp: "Useful when analytical solutions are impossible or too complex[cite: 117]." },
+          { q: "If absolute error is zero, the approximation is:", options: ["Incorrect", "Exact", "Rounded", "Ill-conditioned"], ans: 1, exp: "Absolute error of zero means the approximation matches the exact value[cite: 82]." },
+          { q: "Percentage error is useful because it:", options: ["Standardizes error comparison", "Increases error", "Removes error", "Reduces digits"], ans: 0, exp: "Percentage error standardizes error comparison[cite: 82]." },
+          { q: "Increasing stored digits generally:", options: ["Increases round-off error", "Decreases round-off error", "Removes truncation", "Increases bias"], ans: 1, exp: "Increasing stored digits decreases round-off error[cite: 82]." },
+          { q: "Chopping usually produces error:", options: ["Smaller than rounding", "Larger than rounding", "Equal to rounding", "Zero"], ans: 1, exp: "Chopping usually produces larger error than rounding[cite: 82]." },
+          { q: "A well-conditioned function has condition number:", options: ["Very large", "Close to 1", "Infinite", "Zero always"], ans: 1, exp: "A well-conditioned function has condition number close to 1[cite: 82]." },
+          { q: "Ill-conditioned problems are:", options: ["Stable", "Insensitive", "Highly sensitive to small errors", "Exact"], ans: 2, exp: "Ill-conditioned problems are highly sensitive to small errors[cite: 82]." },
+          { q: "The ratio of relative output error to relative input error defines:", options: ["Absolute error", "Precision", "Condition number", "Bias"], ans: 2, exp: "This ratio defines the condition number[cite: 82]." },
+          { q: "Mathematical approximation errors are also called:", options: ["Round-off", "Inherent", "Truncation", "Bias"], ans: 2, exp: "Mathematical approximation errors are truncation errors[cite: 83]." },
+          { q: "A function reduces input errors if condition number:", options: [">1", "<1", "=0 always", "Infinite"], ans: 1, exp: "A condition number < 1 reduces input errors[cite: 83]." },
+          { q: "Significant digits depend on:", options: ["Relative error size", "Absolute value only", "Integer part", "Units"], ans: 0, exp: "Significant digits depend on relative error size[cite: 83]." },
+          { q: "Inherent errors can be minimized by:", options: ["Ignoring data", "Using better data and higher precision", "Deleting decimals", "Avoiding computers"], ans: 1, exp: "Using better data and higher precision minimizes inherent errors[cite: 83]." }
+        ]
+      },
+      2: {
+        summary: `
+          <div class="summary-section">
+            <h2>📌 Lectures 2 & 3: Linear Systems</h2>
+            <div class="summary-card"><h4>1. LU Decomposition & Doolittle</h4>
+              <p>Write <b>A = LU</b>, where L is lower triangular and U is upper triangular. LU decomposition is not unique unless a condition is imposed.</p>
+              <ul><li><b>Doolittle:</b> diagonal elements of L are 1 (Lᵢᵢ = 1).</li><li><b>Crout:</b> diagonal elements of U are 1 (Uᵢᵢ = 1).</li><li>After A = LU, solve <b>Ly = b</b> by forward substitution, then <b>Ux = y</b> by backward substitution.</li></ul>
+            </div>
+            <div class="summary-card"><h4>2. Thomas Algorithm</h4>
+              <p>Special method for a <b>tridiagonal system</b> (non-zero entries only on the main diagonal and the two adjacent diagonals).</p>
+              <ol><li>Forward coefficients: set y₁ = a₁₂, then yᵢ = aᵢ₂ − (aᵢ₁ aᵢ₋₁,₃ / yᵢ₋₁).</li><li>Set z₁ = b₁/a₁₂, then zᵢ = (bᵢ − aᵢ₁ zᵢ₋₁)/yᵢ.</li><li>Back substitution: xₙ = zₙ, then xᵢ = zᵢ − (aᵢ₃ xᵢ₊₁ / yᵢ), for i = n−1,...,1.</li></ol>
+              <p>Follow the coefficient notation exactly as given in the lecture.</p>
+            </div>
+            <div class="summary-card"><h4>3. Jacobi Iteration</h4>
+              <ul><li>Rearrange each equation to make its diagonal variable the subject.</li><li>Start with initial approximations; the lecture examples use x₁⁽⁰⁾ = x₂⁽⁰⁾ = x₃⁽⁰⁾ = 0.</li><li>Calculate every new variable using values from the <b>previous iteration only</b>; update all variables together.</li><li>Lecture condition: diagonal coefficient is greater than the sum of the absolute values of the other coefficients in that row. If equal, the method may or may not converge.</li></ul>
+            </div>
+            <div class="summary-card"><h4>4. Gauss-Seidel Iteration</h4>
+              <ul><li>Rearrange the equations and choose initial values (the lecture examples use zeros).</li><li>Calculate variables one by one, using each newly calculated value immediately in the next equation.</li><li>Continue until the relative error between consecutive vector norms is sufficiently small.</li></ul>
+              <p><b>Remember:</b> Jacobi uses old values for the whole iteration; Gauss-Seidel uses the latest available values. Diagonal dominance is a sufficient convergence condition, not a guarantee for every possible system.</p>
+            </div>
+            <div class="summary-card"><h4>5. Strict Diagonal Dominance</h4><div class="formula-box">|aᵢᵢ| &gt; Σ<sub>j ≠ i</sub> |aᵢⱼ|</div><p>Compare the absolute value of the diagonal element with the sum of the absolute values of all other elements in the same row.</p></div>
+          </div>
+        `,
+        mcq: [
+          { q: "1. In Doolittle's method, the matrix A is decomposed into:", options: ["A=LL^T", "A=LU where diagonal elements of L are 1", "A=UL", "A=LDU"], ans: 1, exp: "In Doolittle's method, diagonal elements of L are 1[cite: 184]." },
+          { q: "2. In Crout's method, the diagonal elements of which matrix are equal to 1?", options: ["L", "U", "Both L and U", "None"], ans: 1, exp: "In Crout's method, the diagonal elements of U are equal to 1[cite: 184]." },
+          { q: "3. The main difference between Doolittle's and Crout's methods is:", options: ["Number of equations solved", "Whether pivoting is required", "Location of unit diagonal elements", "Type of matrix"], ans: 2, exp: "The main difference is the location of unit diagonal elements[cite: 184]." },
+          { q: "4. The Thomas Algorithm is specifically designed for:", options: ["Dense matrices", "Symmetric matrices", "Tridiagonal systems", "Singular systems"], ans: 2, exp: "Thomas Algorithm is designed specifically for tridiagonal systems[cite: 184]." },
+          { q: "5. A tridiagonal matrix has non-zero elements:", options: ["Only on main diagonal", "On main diagonal and two adjacent diagonals", "On first row only", "Everywhere"], ans: 1, exp: "Tridiagonal matrices have non-zero elements on the main diagonal and two adjacent diagonals[cite: 184]." },
+          { q: "6. Jacobi's method is an example of:", options: ["Direct method", "Decomposition method", "Iterative method", "Elimination method"], ans: 2, exp: "Jacobi's method is an iterative method[cite: 184]." },
+          { q: "7. In Jacobi's method, the new values are computed using:", options: ["Updated values immediately", "Only old values from previous iteration", "Determinant", "LU decomposition"], ans: 1, exp: "Jacobi's method uses only old values from the previous iteration[cite: 185]." },
+          { q: "8. In Gauss-Seidel method, the new values are:", options: ["Not used", "Used only at the end", "Used immediately after computation", "Ignored"], ans: 2, exp: "New values are used immediately after computation in Gauss-Seidel[cite: 185]." },
+          { q: "9. For convergence of Jacobi and Gauss-Seidel methods, a sufficient condition is:", options: ["Singular matrix", "Zero determinant", "Diagonal dominance", "Upper triangular matrix"], ans: 2, exp: "Diagonal dominance is a sufficient condition for convergence[cite: 185]." },
+          { q: "10. Which method often converges faster in typical cases (not guaranteed for every system)?", options: ["Jacobi", "Gauss-Seidel", "Both same", "Thomas"], ans: 1, exp: "Gauss-Seidel often converges faster in typical cases, but this is not guaranteed for every matrix." },
+          { q: "11. Iterative methods are preferred when:", options: ["Matrix size is small", "Matrix is 2×2", "Matrix size is very large", "Determinant is zero"], ans: 2, exp: "Iterative methods are preferred when the matrix size is very large[cite: 185]." },
+          { q: "12. In Doolittle's method, the diagonal elements of L are:", options: ["Zero", "One", "Arbitrary", "Equal to U"], ans: 1, exp: "Diagonal elements of L are One in Doolittle's method[cite: 185]." },
+          { q: "13. Which statement about LU decomposition is correct?", options: ["It is always unique", "It is not unique unless constraints are imposed", "It applies only to diagonal matrices", "It always requires a symmetric matrix"], ans: 1, exp: "The lecture states that LU decomposition is not unique unless constraints are placed on L or U." },
+          { q: "14. A tridiagonal matrix has how many non-zero diagonals?", options: ["1", "2", "3", "4"], ans: 2, exp: "A tridiagonal matrix has 3 non-zero diagonals[cite: 186]." },
+          { q: "15. Direct methods give:", options: ["Approximate solution only", "Exact solution (subject to rounding error)", "Infinite solutions", "No solution"], ans: 1, exp: "Direct methods give exact solutions subject to rounding errors[cite: 186]." },
+          { q: "16. A sufficient condition for convergence is:", options: ["Zero determinant", "Diagonal dominance", "Upper triangular matrix", "Symmetric matrix only"], ans: 1, exp: "Diagonal dominance is a sufficient condition for convergence[cite: 186]." },
+          { q: "17. Strict diagonal dominance means:", options: ["|a_ii| ≥ Σ(j≠i) |a_ij|", "|a_ii| > Σ(j≠i) |a_ij|", "|a_ii| < Σ(j≠i) |a_ij|", "All diagonal elements are 1"], ans: 1, exp: "Compare |a_ii| with the sum of absolute values of all off-diagonal elements in the same row: |a_ii| > Σ(j ≠ i)|a_ij|." },
+          { q: "18. Iterative methods are useful when:", options: ["Matrix size is very small", "Matrix is singular", "Matrix size is large and sparse", "Determinant is 1"], ans: 2, exp: "Iterative methods are useful when the matrix size is large and sparse[cite: 186]." },
+          { q: "19. The stopping criterion in iterative methods is based on:", options: ["Determinant", "Number of equations", "Error tolerance", "Matrix rank"], ans: 2, exp: "Stopping criterion is based on error tolerance[cite: 187]." },
+          { q: "20. Jacobi method updates all variables:", options: ["Simultaneously after iteration", "One by one immediately", "Randomly", "Never"], ans: 0, exp: "Jacobi updates all variables simultaneously after iteration[cite: 187]." },
+          { q: "21. Iterative methods may fail if:", options: ["Matrix is diagonally dominant", "Matrix is well-conditioned", "Matrix is not diagonally dominant", "Matrix is triangular"], ans: 2, exp: "They may fail if the matrix is not diagonally dominant[cite: 187]." },
+          { q: "22. Which method requires initial guess?", options: ["Doolittle", "Thomas", "Jacobi", "LU decomposition"], ans: 2, exp: "Iterative methods like Jacobi require an initial guess[cite: 187]." },
+          { q: "23. LU decomposition transforms A into:", options: ["Product of diagonal matrices", "Lower and upper triangular matrices", "Identity matrix", "Zero matrix"], ans: 1, exp: "LU decomposition transforms A into lower and upper triangular matrices[cite: 187]." },
+          { q: "24. In Doolittle's method, the first row of matrix U is obtained from:", options: ["Back substitution", "First row of A directly", "Column operations", "Determinant expansion"], ans: 1, exp: "The first row of U is obtained directly from the first row of A[cite: 187]." },
+          { q: "25. Which of the following matrices is suitable for the Thomas algorithm?", options: ["Full matrix", "Banded matrix with three non-zero diagonals", "Identity matrix only", "Singular matrix"], ans: 1, exp: "Banded matrix with three non-zero diagonals (tridiagonal)[cite: 188]." }
+        ]
+      },
+      4: {
+        summary: `
+          <div class="summary-section">
+            <h2>📌 Lecture 4: Bracketing Methods (Bisection & False Position)</h2>
+            <div class="summary-card"><h4>1. Root & Bracketing Condition</h4>
+              <p>We seek a root of f(x)=0. For a continuous function on [a,b], if f(a)f(b) &lt; 0, at least one root exists in the interval. Bracketing methods keep the root inside an interval.</p>
+            </div>
+            <div class="summary-card"><h4>2. Bisection (Interval Halving)</h4>
+              <ol><li>Choose [a,b] such that f(a)f(b) &lt; 0.</li><li>Calculate midpoint: <b>c = (a+b)/2</b>.</li><li>Evaluate f(c).</li><li>If f(a)f(c) &lt; 0, replace b by c. If f(c)f(b) &lt; 0, replace a by c.</li><li>Repeat until the tolerance condition is met; the lecture states b−c ≤ ε, then accept c.</li></ol>
+              <div class="formula-box">n ≥ log((b−a)/ε) / log(2)</div><p>This estimates the required number of iterations.</p>
+            </div>
+            <div class="summary-card"><h4>3. False Position (Regula Falsi)</h4>
+              <p>Like Bisection, it starts with an interval satisfying f(a)f(b) &lt; 0. Instead of the midpoint, it uses the x-intercept of the secant line joining (a,f(a)) and (b,f(b)):</p>
+              <div class="formula-box">xₛ = [a f(b) − b f(a)] / [f(b) − f(a)]</div>
+              <ol><li>Choose [a,b] with f(a)f(b) &lt; 0.</li><li>Calculate xₛ using the formula.</li><li>Check f(a)f(xₛ) and f(b)f(xₛ).</li><li>Keep the subinterval where the sign changes, then repeat.</li><li>Stop when the specified tolerance/error bound is reached.</li></ol>
+            </div>
+            <div class="summary-card"><h4>4. Quick Comparison</h4><ul><li><b>Bisection:</b> midpoint of the interval.</li><li><b>False Position:</b> secant-line x-intercept.</li><li><b>Both:</b> require a sign-changing bracket and repeatedly retain the subinterval containing the root.</li></ul></div>
+          </div>
+        `,
+        mcq: [
+          { q: "1. For the bisection method to be applicable on an interval [a,b], which condition is generally required for a continuous function?", options: ["f(a) = f(b)", "f(a)f(b) > 0", "f(a)f(b) < 0", "f'(a) = f'(b)"], ans: 2, exp: "f(a)f(b) < 0 is required to bracket a root[cite: 91, 191]." },
+          { q: "2. For f(x) = x² - 4, consider the interval [1,3]. The first bisection approximation is:", options: ["1", "2", "2.5", "3"], ans: 1, exp: "c = (1 + 3) / 2 = 2[cite: 91, 191]." },
+          { q: "3. Consider f(x) = x² - 9. If Newton-Raphson starts with x₀ = 4, what is the next approximation?", options: ["3", "3.125", "3.5", "4.125"], ans: 1, exp: "f(4)=7, f'(4)=8 => x₁ = 4 - 7/8 = 3.125[cite: 91, 191]." },
+          { q: "4. Which method can generally converge rapidly without requiring a bracketing interval, provided the initial guess is suitable?", options: ["Bisection", "False position", "Newton-Raphson", "All methods require bracketing intervals"], ans: 2, exp: "Newton-Raphson converges rapidly without bracketing intervals[cite: 91, 191]." },
+          { q: "5. For f(x) = x³ - 2, with initial guess x₀ = 1, what is the first Newton-Raphson approximation?", options: ["1.5000", "1.1111", "0.6667", "1.3333"], ans: 3, exp: "f(1)=-1, f'(1)=3 => x₁ = 1 - (-1/3) = 1.3333[cite: 91, 191]." },
+          { q: "6. For f(x) = x³ - 4, the initial interval is [1, 2]. What is the first midpoint?", options: ["2.0", "1.25", "1.75", "1.5"], ans: 3, exp: "c = (1 + 2) / 2 = 1.5[cite: 91, 191]." },
+          { q: "7. For f(x) = x² - 16 on [2, 5], the first midpoint is 3.5. Which interval should be retained?", options: ["[2, 3.5]", "[2, 5]", "[3.5, 5]", "[2, 3]"], ans: 2, exp: "f(3.5) < 0 and f(5) > 0, so root lies in [3.5, 5][cite: 92, 192]." },
+          { q: "8. Which formula is used to calculate the root approximation in the False Position method?", options: ["X = (a+b)/2", "X = (a f(b) - b f(a))/(f(b) - f(a))", "X = a + b", "X = 0"], ans: 1, exp: "False position formula uses secant line intersection[cite: 92, 192]." },
+          { q: "9. For f(a) = -2 and f(b) = 6, where a = 1 and b = 3, what is the first False Position approximation?", options: ["3.0", "2.0", "1.5", "2.5"], ans: 2, exp: "X = (1(6) - 3(-2))/(6 - (-2)) = 12 / 8 = 1.5[cite: 92, 192]." },
+          { q: "10. For a continuous function, which condition is normally required for the False Position method to bracket a root?", options: ["f(a) = f(b)", "f(a)f(b) > 0", "f(a)f(b) < 0", "f'(a) = f'(b)"], ans: 2, exp: "f(a)f(b) < 0 is required to bracket a root[cite: 92, 192]." }
+        ]
+      },
+      5: {
+        summary: `
+          <div class="summary-section">
+            <h2>📌 Lecture 5: Numerical Methods for Solving Nonlinear Equations</h2>
+            <p class="notice">This summary is based on the lecture text you sent. Some slide pages were not captured, so their missing content cannot be verified or reconstructed.</p>
+            <div class="summary-card"><h4>1. Solving Nonlinear Equations</h4>
+              <p>Nonlinear equations include equations in which x is raised to a power, or equations containing transcendental functions of x. The lecture solves them by iterative methods:</p>
+              <ol><li>Fixed-Point (Simple) Iteration.</li><li>Newton-Raphson Method.</li></ol>
+            </div>
+            <div class="summary-card"><h4>2. Fixed-Point (Simple) Iteration</h4>
+              <p>Rewrite the equation f(x)=0 in the form <b>x=g(x)</b>. A fixed point is a value satisfying g(x)=x.</p>
+              <div class="formula-box">xₙ₊₁ = g(xₙ), &nbsp; n = 0,1,2,...</div>
+              <p>Choose an initial approximation x₀, then substitute repeatedly to obtain x₁, x₂, ... until the required accuracy is reached.</p>
+            </div>
+            <div class="summary-card"><h4>3. Sufficient Condition for Convergence</h4>
+              <p>For the simple iteration method, a sufficient condition on an interval I is:</p>
+              <div class="formula-box">|g′(x)| ≤ k &lt; 1 &nbsp; for all x ∈ I</div>
+              <p>Also choose x₀ inside I and ensure the iteration remains in the interval. If |g′(x)| is greater than 1, the iteration is generally not convergent. The chosen rearrangement x=g(x) matters: two rearrangements of the same equation may have different convergence behavior.</p>
+            </div>
+            <div class="summary-card"><h4>4. Fixed-Point Examples from the Lecture</h4>
+              <ul>
+                <li><b>Example 3:</b> x = cos(x), so xₙ₊₁ = cos(xₙ). Starting with x₀=0 gives 1, 0.5403023, 0.8575532, 0.6542897, ... and converges to approximately <b>0.739</b> radians.</li>
+                <li><b>Example 4:</b> x eˣ = 1/3, rewritten as x = (1/3)e⁻ˣ. Thus xₙ₊₁=(1/3)e⁻ˣⁿ. Starting with x₀=1, the lecture's sequence approaches <b>0.2576</b>; its stopping check is |x₈−x₇| &lt; 10⁻⁴.</li>
+                <li><b>Example 5:</b> tan(x)−x=0 on [4,5]. The rearrangement x=tan⁻¹(x)+π is convenient because |g′(x)|=1/(1+x²)&lt;1. The lecture obtains approximately <b>4.493424</b>. The rearrangement x=tan(x) is inconvenient because its derivative is sec²(x)&gt;1.</li>
+                <li><b>Example 6:</b> x³−7x+1=0. The lecture identifies positive roots near <b>0.14327</b> and <b>2.571</b>, using different fixed-point rearrangements and suitable starting values for the different root intervals.</li>
+                <li><b>Example 7:</b> x³−7x+4=0, using xₙ₊₁=(xₙ³+4)/7 and x₀=0. The lecture's sequence approaches <b>0.6068771</b> to within 10⁻⁴.</li>
+              </ul>
+            </div>
+            <div class="summary-card"><h4>5. Newton-Raphson Method</h4>
+              <p>Newton-Raphson uses the tangent to f(x) at the current approximation. From Taylor's theorem, the iteration formula is:</p>
+              <div class="formula-box">xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ)</div>
+              <ol><li>Write f(x)=0 and calculate f′(x).</li><li>Choose an initial value x₀.</li><li>Substitute into the Newton formula to calculate x₁.</li><li>Repeat to calculate x₂, x₃, ...</li><li>Stop when the difference between successive approximations, or the specified error measure, is below the required tolerance.</li></ol>
+              <p>Newton-Raphson is an open method: it does not require a bracketing interval, but the initial guess matters.</p>
+            </div>
+            <div class="summary-card"><h4>6. Sufficient Condition for Newton-Raphson Convergence</h4>
+              <p>The lecture expresses the iteration as xₙ₊₁=g(xₙ). A sufficient local condition is |g′(x)|&lt;1 in the relevant interval. For the Newton iteration this gives:</p>
+              <div class="formula-box">|f(x) f″(x)| &lt; [f′(x)]²</div>
+              <p>for the iterates/values in the interval. This is a sufficient condition, not a necessary condition.</p>
+            </div>
+            <div class="summary-card"><h4>7. Newton-Raphson Examples from the Lecture</h4>
+              <ul>
+                <li><b>Example 9:</b> For x=eˣ sin(x), define f(x)=eˣ sin(x)−x and f′(x)=eˣ(sin(x)+cos(x))−1. Apply xₙ₊₁=xₙ−f(xₙ)/f′(xₙ), starting with x₀=1.</li>
+                <li><b>Example 10:</b> For x³−7x+1=0, f′(x)=3x²−7. The lecture chooses x₀≈−2.8 and obtains a root approximately <b>−2.714</b>, correct to 3 decimal places.</li>
+                <li><b>Example 11:</b> For x−e⁻ˣ=0, f(x)=x−e⁻ˣ and f′(x)=1+e⁻ˣ. Starting with x₀=0.5, the iterations approach <b>0.61906128</b>.</li>
+                <li><b>Example 12:</b> For x³+4x²−10=0, f′(x)=3x²+8x. Starting with x₀=1, the lecture obtains <b>1.3652300</b>; the final successive difference shown is 0.0000066, below 0.0005.</li>
+              </ul>
+            </div>
+            <div class="summary-card"><h4>8. Multiple Roots</h4>
+              <p>The lecture introduces a modification of Newton-Raphson to accelerate convergence when the root is multiple (for example, a double root m=2). The detailed formula/slide content was not fully captured in the text you sent, so it is not reproduced here.</p>
+            </div>
+            <div class="summary-card"><h4>9. Important Comparison</h4>
+              <ul><li><b>Fixed-Point:</b> xₙ₊₁=g(xₙ); depends strongly on the rearrangement x=g(x) and its derivative.</li><li><b>Newton-Raphson:</b> xₙ₊₁=xₙ−f(xₙ)/f′(xₙ); requires a derivative and a suitable initial guess.</li><li><b>Both:</b> are iterative methods; use an initial approximation and repeat until the required accuracy is achieved.</li></ul>
+            </div>
+          </div>
+        `,
+        mcq: [
+          { q: "Q1. The Fixed Point Iteration method is used to solve:", options: ["Linear equations only", "Nonlinear equations", "Differential equations only", "Matrix equations"], ans: 1, exp: "Fixed Point Iteration is used to solve nonlinear equations[cite: 89, 189]." },
+          { q: "Q2. The general form of a fixed-point equation is:", options: ["f(x) = 0", "x = g(x)", "x = f'(x)", "g(x) = 0"], ans: 1, exp: "The general form is x = g(x)[cite: 89, 189]." },
+          { q: "Q3. A fixed point is a value of x that satisfies:", options: ["f(x) = 1", "g(x) = 0", "g(x) = x", "g'(x) = 0"], ans: 2, exp: "A fixed point satisfies g(x) = x[cite: 89, 189]." },
+          { q: "Q4. Which of the following is the correct iteration formula?", options: ["x_{n+1} = f(x_n)", "x_{n+1} = g(x_n)", "x_{n+1} = x_n + g(x_n)", "x_{n+1} = g'(x_n)"], ans: 1, exp: "The correct iteration formula is x_{n+1} = g(x_n)[cite: 89, 189]." },
+          { q: "Q5. The initial approximation in Fixed Point Iteration is usually denoted by:", options: ["x₀", "x_{n+1}", "g'(x)", "f(x)"], ans: 0, exp: "Initial approximation is denoted by x₀[cite: 89, 189]." },
+          { q: "Q6. If |g'(x)| > 1 near the fixed point, the iteration is generally:", options: ["Convergent", "Divergent", "Always accurate", "Constant"], ans: 1, exp: "It is generally divergent when |g'(x)| > 1[cite: 89, 189]." },
+          { q: "Q7. If g'(x) = 0.5 near the fixed point, the iteration is:", options: ["Generally convergent", "Generally divergent", "Impossible to calculate", "Always oscillatory"], ans: 0, exp: "It is generally convergent since |0.5| < 1[cite: 89, 189]." },
+          { q: "Q8. The Fixed Point Iteration method stops when:", options: ["The error becomes sufficiently small", "The initial value becomes zero", "The derivative becomes greater than one", "The number of iterations is always one"], ans: 0, exp: "It stops when the error becomes sufficiently small[cite: 89, 190]." },
+          { q: "Q9. Given g(x) = (x + 2) / 3 and x₀ = 1, calculate x₁.", options: ["0", "1", "2", "3"], ans: 1, exp: "x₁ = (1 + 2) / 3 = 1[cite: 90, 190]." },
+          { q: "Q10. Given g(x) = √(2 + x) and x₀ = 2, calculate x₁.", options: ["1", "2", "3", "4"], ans: 1, exp: "x₁ = √(2 + 2) = √4 = 2[cite: 90, 190]." },
+          { q: "Q11. The equation f(x) = 0 can be converted into fixed-point form by:", options: ["Rearranging it into x = g(x)", "Differentiating it twice", "Integrating it", "Multiplying both sides by zero"], ans: 0, exp: "Rearranging it into x = g(x)[cite: 90, 190]." },
+          { q: "Q12. Which two iterative methods are covered in this lecture?", options: ["Bisection and False Position", "Fixed-Point and Newton-Raphson", "Gauss-Seidel and Jacobi", "LU and Thomas"], ans: 1, exp: "The lecture lists Fixed-Point Iteration and Newton-Raphson for nonlinear equations." },
+          { q: "Q13. The correct Fixed-Point iteration formula is:", options: ["xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ)", "xₙ₊₁ = g(xₙ)", "xₙ₊₁ = f′(xₙ)", "xₙ₊₁ = xₙ²"], ans: 1, exp: "After rewriting the equation as x=g(x), use xₙ₊₁=g(xₙ)." },
+          { q: "Q14. A sufficient convergence condition for Fixed-Point Iteration on I is:", options: ["|g′(x)| > 1", "g′(x)=0 always", "|g′(x)| ≤ k < 1", "f′(x)=0"], ans: 2, exp: "The magnitude of the derivative must be bounded by a constant less than 1 on the interval." },
+          { q: "Q15. For x = cos(x), the iteration is:", options: ["xₙ₊₁ = sin(xₙ)", "xₙ₊₁ = cos(xₙ)", "xₙ₊₁ = xₙ cos(xₙ)", "xₙ₊₁ = cos′(xₙ)"], ans: 1, exp: "Substitute g(x)=cos(x) into xₙ₊₁=g(xₙ)." },
+          { q: "Q16. In the lecture's x=cos(x) example, the approximate fixed point is:", options: ["0.2576", "1.0000", "0.739", "4.4934"], ans: 2, exp: "The sequence converges to approximately 0.739 radians." },
+          { q: "Q17. For tan(x)−x=0 on [4,5], which rearrangement is stated to be convenient?", options: ["x=tan(x)", "x=π+tan⁻¹(x)", "x=sec²(x)", "x=tan⁻¹(πx)"], ans: 1, exp: "The lecture uses x=π+tan⁻¹(x), whose derivative magnitude is 1/(1+x²)<1." },
+          { q: "Q18. Why is x=tan(x) inconvenient for the fixed-point example?", options: ["Its derivative magnitude is greater than 1", "It has no derivative", "It is a linear equation", "It has no root"], ans: 0, exp: "For g(x)=tan(x), g′(x)=sec²(x)>1, so the stated sufficient convergence condition is not satisfied." },
+          { q: "Q19. Newton-Raphson iteration is:", options: ["xₙ₊₁ = g(xₙ)", "xₙ₊₁ = (a+b)/2", "xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ)", "xₙ₊₁ = f(xₙ)f′(xₙ)"], ans: 2, exp: "This is the Newton-Raphson formula derived using the tangent/Taylor expansion." },
+          { q: "Q20. Newton-Raphson requires which derivative?", options: ["The first derivative f′(x)", "Only the third derivative", "No derivative", "The integral of f(x)"], ans: 0, exp: "The iteration divides by f′(xₙ), so the first derivative is required." },
+          { q: "Q21. Newton-Raphson is classified as:", options: ["A bracketing method", "An open iterative method", "A direct matrix method", "A sorting method"], ans: 1, exp: "It uses an initial approximation rather than maintaining a sign-changing bracket." },
+          { q: "Q22. A sufficient local convergence condition stated for Newton-Raphson is:", options: ["|f(x)f″(x)| < [f′(x)]²", "f′(x)=0", "f(x)>1", "|f″(x)| > |f′(x)|"], ans: 0, exp: "This is the condition given in the lecture for the Newton iteration." },
+          { q: "Q23. For f(x)=x³−7x+1, the derivative is:", options: ["3x²−7", "x²−7", "3x−7", "x³−7"], ans: 0, exp: "Differentiate term by term: d(x³)/dx=3x² and d(−7x)/dx=−7." },
+          { q: "Q24. For f(x)=x−e⁻ˣ, the first derivative is:", options: ["1−e⁻ˣ", "1+e⁻ˣ", "eˣ−1", "−e⁻ˣ"], ans: 1, exp: "The derivative of −e⁻ˣ is +e⁻ˣ, so f′(x)=1+e⁻ˣ." },
+          { q: "Q25. In the lecture's example x−e⁻ˣ=0, the approximate root is:", options: ["0.14327", "0.61906128", "1.3652300", "−2.714"], ans: 1, exp: "The Newton-Raphson sequence shown approaches 0.61906128." },
+          { q: "Q26. For x³+4x²−10=0, the derivative is:", options: ["3x²+8x", "3x+8", "x²+4x", "3x²+4"], ans: 0, exp: "Differentiate x³+4x²−10 to obtain 3x²+8x." },
+          { q: "Q27. The lecture's approximate root for x³+4x²−10=0 is:", options: ["0.61906128", "1.3652300", "2.571", "4.493424"], ans: 1, exp: "The final approximation shown is 1.3652300." },
+          { q: "Q28. For x³−7x+1=0, the lecture's Newton starting value x₀≈−2.8 leads to a root near:", options: ["−2.714", "0.14327", "0.739", "2.571"], ans: 0, exp: "The sequence shown converges to approximately −2.714." },
+          { q: "Q29. What is the main reason to choose a suitable initial approximation?", options: ["To guarantee every method gives the same sequence", "The iteration's convergence can depend on the starting value", "To avoid calculating the function", "To make the equation linear"], ans: 1, exp: "The lecture examples select starting values in suitable intervals; convergence depends on the iteration and starting point." },
+          { q: "Q30. For a multiple root, the lecture says Newton-Raphson can be:", options: ["Adapted to accelerate convergence", "Replaced by LU decomposition", "Used without f′(x)", "Converted into Bisection automatically"], ans: 0, exp: "The lecture introduces an adapted Newton-Raphson method for multiple roots." },
+          { q: "Q31. In Fixed-Point Iteration, what is the first step?", options: ["Find a matrix inverse", "Rewrite f(x)=0 as x=g(x)", "Set f′(x)=0", "Choose a bracketing interval only"], ans: 1, exp: "The equation must first be rearranged into fixed-point form x=g(x)." },
+          { q: "Q32. If successive approximations differ by less than the specified tolerance, what does that indicate?", options: ["The stopping accuracy requirement may be met", "The root does not exist", "The derivative is undefined", "The method must restart"], ans: 0, exp: "The lecture examples stop when the difference between successive approximations is below the required tolerance." },
+          { q: "Q33. Which statement about Fixed-Point rearrangements is correct?", options: ["Every rearrangement has the same convergence behavior", "The rearrangement can affect convergence", "The derivative is never needed", "Only one starting value is allowed"], ans: 1, exp: "The lecture's tan(x) example shows one rearrangement is inconvenient while another satisfies the derivative condition." },
+          { q: "Q34. Which statement correctly compares the two methods?", options: ["Both use repeated approximations; Newton-Raphson uses f′(x)", "Fixed-Point always needs f′(x)", "Newton-Raphson always needs a sign-changing interval", "Neither method uses an initial value"], ans: 0, exp: "Both are iterative methods, while Newton-Raphson specifically uses the first derivative." }
+
+        ]
+      }
+    };
+
+    // The Newton-Raphson items belong with the existing Open Methods section,
+    // not with Lecture 4's supplied Bisection/False Position lecture.
+    data[5].mcq.push(...data[4].mcq.splice(2, 3));
+
+    // Populate quiz banks for individual lectures
+    data[1].quiz = [...data[1].mcq];
+    data[2].quiz = [...data[2].mcq];
+    data[4].quiz = [...data[4].mcq];
+    data[5].quiz = [...data[5].mcq];
+
+    let currentLecture = 1;
+    let isComprehensive = false;
+
+    function shuffleArray(array) {
+      let arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function selectLecture(lecNum, btn) {
+      isComprehensive = false;
+      currentLecture = lecNum;
+      document.querySelectorAll('.lecture-btn, .comprehensive-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Restore normal tabs
+      document.getElementById('main-nav-tabs').innerHTML = `
+        <button class="tab-btn active" onclick="switchTab('summary', this)">📌 Lecture Summary</button>
+        <button class="tab-btn" onclick="switchTab('mcq', this)">📝 MCQ Bank</button>
+        <button class="tab-btn" onclick="switchTab('quiz', this)">⚡ Quick Quiz</button>
+      `;
+      renderContent();
+      switchTab('summary', document.querySelector('#main-nav-tabs .tab-btn'));
+    }
+
+    function selectComprehensiveQuiz(btn) {
+      isComprehensive = true;
+      document.querySelectorAll('.lecture-btn, .comprehensive-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Hide summary and standard MCQ, keep only the comprehensive quiz tab
+      document.getElementById('main-nav-tabs').innerHTML = `
+        <button class="tab-btn active" onclick="switchTab('comprehensive', this)">🔥 Comprehensive Final Exam Quiz</button>
+      `;
+
+      renderComprehensiveView();
+      switchTab('comprehensive', document.querySelector('#main-nav-tabs .tab-btn'));
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.getElementById('theme-icon');
+      const themeText = document.getElementById('theme-text');
+
+      if (body.getAttribute('data-theme') === 'dark') {
+        body.removeAttribute('data-theme');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark Mode';
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light Mode';
+      }
+    }
+
+    function checkAnswer(btn, isCorrect, correctIndex, expText) {
+      const parent = btn.parentElement;
+      const feedback = parent.nextElementSibling;
+      const buttons = parent.querySelectorAll('.option-btn');
+
+      buttons.forEach(b => b.disabled = true);
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+        feedback.style.color = 'var(--success)';
+        feedback.innerHTML = `<b>Correct! ✨</b><br>${expText}`;
+      } else {
+        btn.classList.add('wrong');
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedback.style.color = 'var(--error)';
+        feedback.innerHTML = `<b>Incorrect! ❌</b><br>${expText}`;
+        
+        if (buttons[correctIndex]) {
+          buttons[correctIndex].classList.add('correct');
+        }
+      }
+    }
+
+    function buildQuestionCard(item, number) {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      const title = document.createElement('div');
+      title.className = 'question-title';
+      title.textContent = number ? `Q${number}: ${item.q}` : item.q;
+      const options = document.createElement('div');
+      options.className = 'options-grid';
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback-box';
+      item.options.forEach((opt, index) => {
+        const button = document.createElement('button');
+        button.className = 'option-btn';
+        const span = document.createElement('span');
+        span.textContent = opt;
+        button.appendChild(span);
+        button.addEventListener('click', () => checkAnswer(button, index === item.ans, item.ans, item.exp));
+        options.appendChild(button);
+      });
+      card.append(title, options, feedback);
+      return card;
+    }
+
+    function renderContent() {
+      const lec = data[currentLecture];
+      document.getElementById('summary').innerHTML = lec.summary;
+      const mcqPanel = document.getElementById('mcq');
+      mcqPanel.innerHTML = '<h2>📝 MCQ Question Bank</h2><br>';
+      lec.mcq.forEach(item => mcqPanel.appendChild(buildQuestionCard(item)));
+      const quizPanel = document.getElementById('quiz');
+      quizPanel.innerHTML = '<h2>⚡ Quick Quiz</h2><br>';
+      shuffleArray(lec.quiz).forEach((item, idx) => quizPanel.appendChild(buildQuestionCard(item, idx + 1)));
+    }
+
+    function renderComprehensiveView() {
+      const allQuestions = [
+        ...data[1].mcq,
+        ...data[2].mcq,
+        ...data[4].mcq,
+        ...data[5].mcq
+      ];
+      const panel = document.getElementById('comprehensive');
+      panel.innerHTML = `<h2>🔥 Comprehensive Final Exam Quiz (${allQuestions.length} Questions)</h2>
+        <p style="margin-bottom:20px;color:var(--text-sub)">All available questions from Lectures 1, 2 & 3, 4, and the unverified Lecture 5 section, shuffled together.</p><br>`;
+      shuffleArray(allQuestions).forEach((item, idx) => panel.appendChild(buildQuestionCard(item, idx + 1)));
+    }
+
+    renderContent();
+  </script>
+</body>
+</html>
